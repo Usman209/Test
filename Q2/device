@@ -1,0 +1,64 @@
+CREATE TABLE `ZThinQ_Device` (
+  `DeviceId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `DeviceName` varchar(128) CHARACTER SET utf8 NOT NULL,
+  `DeviceCategoryCode` varchar(32) default NULL,
+  `Description` varchar(1024) CHARACTER SET utf8 DEFAULT NULL,
+  `IpAddress` varchar(128) DEFAULT NULL,
+  `IsConfigured` bit(1) NOT NULL DEFAULT b'0',
+  `IsSwitchedOn` bit(1) NOT NULL DEFAULT b'0',
+  `PlaceId_FK` bigint(20) NOT NULL,
+  `CompanyId_FK` bigint(20) NOT NULL,
+  `OwnerCompanyId_FK` bigint(20) NOT NULL,
+  `IsDeleted` bit(1) NOT NULL DEFAULT b'0',
+  `IsArchived` bit(1) NOT NULL DEFAULT b'0',
+  `CreatedDate` datetime NOT NULL,
+  `ModifiedDate` datetime DEFAULT NULL,
+  `CreatedBy_FK` bigint(20) NOT NULL,
+  `ModifiedBy_FK` bigint(20) DEFAULT NULL,
+   PRIMARY KEY (`DeviceId`)
+);
+/************************************************************************************************/
+/* Foreign Key Constraints */
+/************************************************************************************************/
+/* Foreign Key Constraints: Device_PlaceId_FK */
+/*---------------------------------------------------*/
+/* Patch Script: Create constraint if not exists */
+SET @tableName = 'ZThinQ_Device';
+SET @columnName ='PlaceId_FK';
+SET @constraintName = 'Device_PlaceId_FK';/* TableName_ColumnName */
+SET @refrence = 'ZThinQ_Place(PlaceId)';/* RefrenceTableName(RefrenceColumnName)*/
+
+SET @addConstraint = CONCAT("ALTER TABLE ", @tableName,
+							" ADD CONSTRAINT ",@constraintName,
+                            " FOREIGN KEY (", @columnName, ") REFERENCES ", @refrence,
+                            " ON DELETE NO ACTION ON UPDATE NO ACTION");
+SET @addConstraintStatement = IF((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = @tableName AND CONSTRAINT_NAME = @constraintName) = true, '', @addConstraint);
+
+PREPARE statement FROM @addConstraintStatement;
+EXECUTE statement;
+DEALLOCATE PREPARE statement;
+
+/* RollBack Script: Drop constraint if already exists */
+/*
+SET @tableName = 'ZThinQ_Device';
+SET @constraintName = 'Device_PlaceId_FK';
+
+SET @dropConstraint = CONCAT("ALTER TABLE ",@tableName," Drop FOREIGN KEY ",@constraintName);
+SET @dropConstraintStatement = IF((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = @tableName AND CONSTRAINT_NAME = @constraintName) = true, @dropConstraint, '');
+
+PREPARE statement FROM @dropConstraintStatement;
+EXECUTE statement;
+DEALLOCATE PREPARE statement;
+*/
+/* Verify Script: Select constraint */
+/*
+SET @tableName = 'ZThinQ_Device';
+SET @verifyConstraintStatement = SELECT * FROM information_schema.TABLE_CONSTRAINTS WHERE
+            CONSTRAINT_SCHEMA = DATABASE() AND
+            TABLE_NAME = @tableName;
+
+PREPARE statement FROM @verifyConstraintStatement;
+EXECUTE statement;
+DEALLOCATE PREPARE statement;
+*/
+/************************************************************************************************/

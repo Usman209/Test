@@ -1,0 +1,15 @@
+CREATE TABLE `Place` (
+  `PlaceId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PlaceName` varchar(128) CHARACTER SET utf8 NOT NULL,
+  `PlaceCategoryCode` varchar(32) NOT NULL,
+  `Description` varchar(1024) CHARACTER SET utf8 DEFAULT NULL,
+  `CompanyId_FK` bigint(20) NOT NULL,
+  `OwnerCompanyId_FK` bigint(20) NOT NULL,
+  `IsDeleted` bit(1) NOT NULL DEFAULT b'0',
+  `IsArchived` bit(1) NOT NULL DEFAULT b'0',
+  `CreatedDate` datetime NOT NULL,
+  `ModifiedDate` datetime DEFAULT NULL,
+  `CreatedBy_FK` bigint(20) NOT NULL,
+  `ModifiedBy_FK` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`PlaceId`)
+)
